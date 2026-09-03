@@ -1,10 +1,8 @@
 {
   "date": "2026-09-03",
   "available": [
-    "froyo-plain",
     "froyo-wildberries",
     "froyo-strawberry",
-    "froyo-mango",
     "froyo-pinkfusion"
   ]
 }
