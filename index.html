@@ -979,10 +979,27 @@ function simpleCard(item, opts){
 }
 
 /* ================= RENDER: SECTIONS ================= */
+function normalizeSearchText(value){
+  return String(value||'')
+    .normalize('NFKD')
+    .replace(/[\u064B-\u065F\u0670]/g,'')
+    .replace(/[إأآٱ]/g,'ا')
+    .toLowerCase()
+    .trim();
+}
+function searchTokens(value){
+  return normalizeSearchText(value)
+    .replace(/[^a-z0-9\u0600-\u06FF]+/g,' ')
+    .split(/\s+/)
+    .filter(Boolean);
+}
 function matchesSearch(item){
   if(!searchTerm) return true;
-  const q=searchTerm.toLowerCase();
-  return [item.name,item.en,item.desc,DESC_EN[item.id]].filter(Boolean).join(' ').toLowerCase().includes(q);
+  const queryTokens=searchTokens(searchTerm);
+  const nameTokens=searchTokens([item.name,item.en].filter(Boolean).join(' '));
+  return queryTokens.length>0 && queryTokens.every(query=>nameTokens.some(word=>
+    word.startsWith(query) || (word.startsWith('ال')&&word.length>3&&word.slice(2).startsWith(query))
+  ));
 }
 function isItemCurrentlyAvailable(item){ return !icecreamItems.includes(item) || isIcecreamAvailable(item); }
 function cardForItem(item){
