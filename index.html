@@ -6,6 +6,7 @@
 <meta name="theme-color" content="#28262a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="icon" type="image/png" href="omani-rial-symbol.png">
 <title>بيتزاستو | اطلب الآن</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;800;900&family=Tajawal:wght@400;500;700&display=swap');
@@ -226,6 +227,12 @@ button{font-family:inherit;touch-action:manipulation;}
 .chip.selected{border-color:var(--pink); background:var(--pink-soft); color:var(--pink-dark);}
 .chip.selected small{color:var(--pink-dark);}
 .chip.disabled{opacity:.4;}
+.customize-hint{margin-top:10px;padding:9px 11px;border:1px dashed var(--line);border-radius:10px;background:var(--cream);color:var(--grey);font-size:11.5px;font-weight:700;}
+.remove-options-btn{width:100%;min-height:42px;margin-top:12px;padding:8px 12px;border:1.5px solid var(--line);border-radius:11px;background:#fff;color:var(--charcoal);font-family:inherit;font-size:12.5px;font-weight:800;display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:start;}
+.remove-options-btn::after{content:'＋';color:var(--pink-dark);font-size:18px;line-height:1;}
+.remove-options-btn[aria-expanded="true"]{border-color:var(--pink);background:var(--pink-soft);color:var(--pink-dark);}
+.remove-options-btn[aria-expanded="true"]::after{content:'−';}
+.exclusions-panel{padding-top:2px;}
 
 .card-bottom{
   display:flex; align-items:center; justify-content:space-between;
@@ -254,9 +261,15 @@ button{font-family:inherit;touch-action:manipulation;}
 .add-btn{
   background:var(--pink); color:#fff; border:none;
   padding:9px 18px; border-radius:10px; font-size:13.5px; font-weight:800;
+  animation:addButtonPulse 2.6s ease-in-out infinite;
 }
-.add-btn:active{background:var(--pink-dark);}
-.add-btn.added{background:var(--ok);}
+.add-btn:active{background:var(--pink-dark);animation-play-state:paused;transform:scale(.98);}
+.add-btn.added{background:var(--ok);animation:none;}
+@keyframes addButtonPulse{
+  0%,72%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(231,29,91,0);}
+  82%{transform:scale(1.025);box-shadow:0 0 0 5px rgba(231,29,91,.11);}
+  92%{transform:scale(1);box-shadow:0 0 0 0 rgba(231,29,91,0);}
+}
 
 /* ---------- bottom bar ---------- */
 .cartbar{
@@ -497,20 +510,15 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
             <input type="text" id="inputArea" placeholder="مثال: العلو" autocomplete="address-level2" aria-describedby="errorArea">
             <div class="field-error" id="errorArea">الرجاء إدخال المنطقة</div>
           </div>
-          <div class="field" id="fAddress">
-            <label for="inputAddress">العنوان التفصيلي</label>
-            <input type="text" id="inputAddress" placeholder="اسم الشارع، رقم المنزل، علامة مميزة" autocomplete="street-address" aria-describedby="errorAddress">
-            <div class="field-error" id="errorAddress">الرجاء إدخال العنوان</div>
-          </div>
           <div class="field" id="fLocation">
-            <label for="inputLocation">الموقع المباشر من خرائط Google (اختياري)</label>
+            <label for="inputLocation">الموقع المباشر من خرائط Google (مطلوب)</label>
             <div class="location-actions">
               <input type="url" id="inputLocation" placeholder="ألصق رابط الموقع هنا" inputmode="url" autocomplete="url" aria-describedby="locationStatus errorLocation">
               <button class="location-btn" id="getLocationBtn" type="button">📍 تحديد موقعي</button>
             </div>
-            <div class="location-status" id="locationStatus" aria-live="polite">يمكنك تحديد موقعك تلقائيًا أو لصق رابط من خرائط Google.</div>
+            <div class="location-status" id="locationStatus" aria-live="polite">الموقع مطلوب للتوصيل. حدده تلقائيًا أو ألصق رابطًا من خرائط Google.</div>
             <button class="location-map-btn" id="openMapsBtn" type="button">🗺️ فتح خرائط Google لنسخ رابط الموقع</button>
-            <div class="field-error" id="errorLocation">الرجاء إدخال رابط موقع صحيح يبدأ بـ https://</div>
+            <div class="field-error" id="errorLocation">الموقع مطلوب للتوصيل. أدخل رابط موقع صحيحًا.</div>
           </div>
           <div class="payment-label">طريقة الدفع</div>
           <div class="order-type payment-options" id="paymentBlock" role="group" aria-label="طريقة الدفع">
@@ -523,20 +531,14 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
           🏬 سيتم استلام الطلب من المحل
         </div>
 
-        <div class="field" id="fName" style="display:none;">
-          <label for="inputName">الاسم</label>
-          <input type="text" id="inputName" placeholder="اسمك الكامل" autocomplete="name" aria-describedby="errorName">
-          <div class="field-error" id="errorName">الرجاء إدخال الاسم</div>
-        </div>
         <div class="field" id="fCar">
           <label for="inputCar">رقم السيارة</label>
           <input type="text" id="inputCar" placeholder="مثال: 1234 أ ب" autocomplete="off" aria-describedby="errorCar">
           <div class="field-error" id="errorCar">الرجاء إدخال رقم السيارة</div>
         </div>
-        <div class="field" id="fPhone">
-          <label for="inputPhone">رقم الهاتف</label>
-          <input type="tel" id="inputPhone" placeholder="9xxxxxxx" inputmode="numeric" autocomplete="tel" aria-describedby="errorPhone">
-          <div class="field-error" id="errorPhone">الرجاء إدخال رقم هاتف صحيح</div>
+        <div class="field" id="fVehicle">
+          <label for="inputVehicle">وصف المركبة (اختياري)</label>
+          <input type="text" id="inputVehicle" placeholder="مثال: تويوتا بيضاء" autocomplete="off">
         </div>
         <div class="field">
           <label for="inputNotes">ملاحظات (اختياري)</label>
@@ -609,7 +611,7 @@ const CRUSTS = [
   {id:'thin', label:'العجينة النحيفة', extra:{S:0,M:0,L:0}},
   {id:'stuffed', label:'بأطراف الجبن', extra:{S:null,M:0.5,L:0.6}},
 ];
-const PIZZA_EXCLUSIONS = ['بصل','هلابينو','مشروم'];
+const PIZZA_EXCLUSIONS = ['بصل','هلابينو','مشروم','طماطم','خضار'];
 
 const pizzaChicken = [
   {id:'tikka', name:'تكة دجاج', en:'Chicken Tikka', desc:'صلصة البيتزا، دجاج تكة، جبنة الموزاريلا، بصل، فلفل حلو أخضر.', isNew:true},
@@ -774,7 +776,7 @@ const OPTION_EN={
   'العجينة الأصلية':'Original Crust','العجينة النحيفة':'Thin Crust','بأطراف الجبن':'Cheese-Stuffed Crust',
   'داينمايت':'Dynamite','باربيكيو':'BBQ','رانش':'Ranch','بيري بيري':'Peri Peri',
   'برتقال':'Orange','مانجو':'Mango','توت مشكل':'Mixed Berries',
-  'بصل':'Onion','هلابينو':'Jalapeño','مشروم':'Mushroom'
+  'بصل':'Onion','هلابينو':'Jalapeño','مشروم':'Mushroom','طماطم':'Tomato','خضار':'Vegetables'
 };
 function optionName(value){ return currentLang==='en'?(OPTION_EN[value]||value):value; }
 function translatedCartLabel(label){
@@ -784,7 +786,7 @@ function translatedCartLabel(label){
     'صغير':'Small','وسط':'Medium','كبير':'Large','صوص:':'Sauce:','نكهة:':'Flavor:',
     'صلصة:':'Sauce:','بدون:':'Without:','العجينة الأصلية':'Original Crust',
     'العجينة النحيفة':'Thin Crust','بأطراف الجبن':'Cheese-Stuffed Crust','بصل':'Onion',
-    'هلابينو':'Jalapeño','مشروم':'Mushroom','داينمايت':'Dynamite','باربيكيو':'BBQ',
+    'هلابينو':'Jalapeño','مشروم':'Mushroom','طماطم':'Tomato','خضار':'Vegetables','داينمايت':'Dynamite','باربيكيو':'BBQ',
     'رانش':'Ranch','بيري بيري':'Peri Peri','برتقال':'Orange','مانجو':'Mango','توت مشكل':'Mixed Berries'
   };
   Object.entries(replacements).forEach(([ar,en])=>{ value=value.split(ar).join(en); });
@@ -841,13 +843,15 @@ function renderTabs(){
 
 /* ================= CARD BUILDERS ================= */
 function pizzaCard(item){
-  const t = getTemp(item.id, {size:'M', crust:'original', sauce:item.sauceChoices ? item.sauceChoices[0] : '', exclusions:[]});
+  const t = getTemp(item.id, {size:'M', sizeChosen:false, crust:'original', sauce:item.sauceChoices ? item.sauceChoices[0] : '', exclusions:[], showExclusions:false});
   if(!Array.isArray(t.exclusions)) t.exclusions=[];
-  if(t.size==='S' && t.crust!=='original') t.crust='original';
-  const crustAvailable = CRUSTS.filter(c => t.size==='S' ? c.id==='original' : true);
+  if(typeof t.sizeChosen!=='boolean') t.sizeChosen=false;
+  if(typeof t.showExclusions!=='boolean') t.showExclusions=false;
+  const selectedCrust=CRUSTS.find(c=>c.id===t.crust);
+  if(!selectedCrust || selectedCrust.extra[t.size]===null) t.crust='original';
   const basePrice = PIZZA_PRICE[t.size];
   const crustObj = CRUSTS.find(c=>c.id===t.crust) || CRUSTS[0];
-  const crustExtra = (t.size==='S') ? 0 : (crustObj.extra[t.size] || 0);
+  const crustExtra = crustObj.extra[t.size] || 0;
   const totalUnit = basePrice + crustExtra;
 
   return `
@@ -868,19 +872,19 @@ function pizzaCard(item){
       <div class="opt-label">${tr('الحجم','Size')}</div>
       <div class="opt-chips">
         ${['S','M','L'].map(s=>`
-          <button class="chip ${t.size===s?'selected':''}" data-act="size" data-item="${item.id}" data-val="${s}">
+          <button class="chip ${t.sizeChosen&&t.size===s?'selected':''}" data-act="size" data-item="${item.id}" data-val="${s}" aria-pressed="${t.sizeChosen&&t.size===s}">
             ${s==='S'?tr('صغير','Small'):s==='M'?tr('وسط','Medium'):tr('كبير','Large')}
             <small>${currencyMarkup(PIZZA_PRICE[s])}</small>
           </button>`).join('')}
       </div>
     </div>
 
-    <div class="opt-row">
+    ${t.sizeChosen ? `<div class="opt-row">
       <div class="opt-label">${tr('نوع العجينة','Crust')}</div>
       <div class="opt-chips">
         ${CRUSTS.map(c=>{
-          const disabled = (t.size==='S' && c.id!=='original');
-          const extra = (t.size==='S') ? 0 : c.extra[t.size];
+          const disabled = c.extra[t.size]===null;
+          const extra = disabled ? 0 : c.extra[t.size];
           return `<button class="chip ${t.crust===c.id?'selected':''} ${disabled?'disabled':''}"
             ${disabled?'disabled':''} data-act="crust" data-item="${item.id}" data-val="${c.id}">
             ${optionName(c.label)}
@@ -888,9 +892,9 @@ function pizzaCard(item){
           </button>`;
         }).join('')}
       </div>
-    </div>
+    </div>` : `<div class="customize-hint">${tr('اختر الحجم أولًا لعرض أنواع العجينة','Choose a size first to view crust options')}</div>`}
 
-    ${item.sauceChoices ? `
+    ${t.sizeChosen&&item.sauceChoices ? `
     <div class="opt-row">
       <div class="opt-label">${tr('الصوص المفضل','Preferred Sauce')}</div>
       <div class="opt-chips">
@@ -898,15 +902,19 @@ function pizzaCard(item){
       </div>
     </div>` : ''}
 
-    <div class="opt-row">
-      <div class="opt-label">${tr('إزالة مكونات (اختياري)','Remove ingredients (optional)')}</div>
+    ${t.sizeChosen ? `<button type="button" class="remove-options-btn" data-act="toggleexclusions" data-item="${item.id}" aria-expanded="${t.showExclusions}" aria-controls="exclusions-${item.id}">
+      <span>${tr('هل تريد إزالة أحد المكونات؟','Want to remove an ingredient?')}${t.exclusions.length?` (${t.exclusions.length})`:''}</span>
+    </button>` : ''}
+
+    ${t.sizeChosen&&t.showExclusions ? `<div class="opt-row exclusions-panel" id="exclusions-${item.id}">
+      <div class="opt-label">${tr('حدد المكونات التي تريد إزالتها','Select ingredients to remove')}</div>
       <div class="opt-chips" role="group" aria-label="${tr('مكونات لا تريدها في','Ingredients to remove from')} ${itemName(item)}">
         ${PIZZA_EXCLUSIONS.map(ingredient=>{
           const selected=t.exclusions.includes(ingredient);
           return `<button type="button" class="chip ${selected?'selected':''}" data-act="exclude" data-item="${item.id}" data-val="${ingredient}" aria-pressed="${selected}">${tr('بدون','No')} ${optionName(ingredient)}</button>`;
         }).join('')}
       </div>
-    </div>
+    </div>` : ''}
 
     <div class="card-bottom">
       <div class="price-tag">${currencyMarkup(totalUnit)}</div>
@@ -1080,7 +1088,13 @@ function bindCardEvents(){
       const act = btn.dataset.act;
       const id = btn.dataset.item;
       const t = temp[id] || (temp[id] = {qty:1});
-      if(act==='size'){ t.size = btn.dataset.val; }
+      if(act==='size'){
+        if(!t.sizeChosen) t.crust='original';
+        t.size = btn.dataset.val;
+        t.sizeChosen=true;
+        const chosenCrust=CRUSTS.find(c=>c.id===t.crust);
+        if(!chosenCrust || chosenCrust.extra[t.size]===null) t.crust='original';
+      }
       if(act==='crust'){ t.crust = btn.dataset.val; }
       if(act==='flavor'){ t.flavor = btn.dataset.val; }
       if(act==='sauce'){ t.sauce = btn.dataset.val; }
@@ -1091,6 +1105,7 @@ function bindCardEvents(){
           ? t.exclusions.filter(value=>value!==ingredient)
           : [...t.exclusions,ingredient];
       }
+      if(act==='toggleexclusions'){ t.showExclusions=!t.showExclusions; }
       if(act==='qtyplus'){ t.qty = Math.min(20,(t.qty||1)+1); }
       if(act==='qtyminus'){ t.qty = Math.max(1,(t.qty||1)-1); }
       if(act==='add'){ addToCart(id); }
@@ -1120,8 +1135,9 @@ function addToCart(id){
   let unitPrice, label;
 
   if(isPizza){
+    if(!t.sizeChosen){showToast(tr('اختر حجم البيتزا أولًا','Choose a pizza size first'));renderSections();return;}
     const crustObj = CRUSTS.find(c=>c.id===t.crust) || CRUSTS[0];
-    const extra = (t.size==='S') ? 0 : (crustObj.extra[t.size]||0);
+    const extra = crustObj.extra[t.size]||0;
     unitPrice = PIZZA_PRICE[t.size] + extra;
     const exclusions=Array.isArray(t.exclusions) ? t.exclusions.filter(value=>PIZZA_EXCLUSIONS.includes(value)) : [];
     label = `${SIZE_LABEL[t.size]} • ${crustObj.label}${t.sauce ? ' • صوص: '+t.sauce : ''}${exclusions.length ? ' • بدون: '+exclusions.join('، ') : ''}`;
@@ -1238,13 +1254,13 @@ function setOrderType(type, persist=true){
   document.getElementById('otPickup').setAttribute('aria-pressed',String(!delivery));
   document.getElementById('deliveryFields').style.display=delivery?'block':'none';
   document.getElementById('pickupNote').style.display=delivery?'none':'flex';
-  document.getElementById('fName').style.display=delivery?'block':'none';
   document.getElementById('fCar').style.display=delivery?'none':'block';
+  document.getElementById('fVehicle').style.display=delivery?'none':'block';
   const alert=document.getElementById('otAlert'); if(alert) alert.textContent='';
   if(delivery){
     document.getElementById('fCar').classList.remove('err');
   }else{
-    ['fArea','fAddress','fLocation','fName'].forEach(id=>document.getElementById(id).classList.remove('err'));
+    ['fArea','fLocation'].forEach(id=>document.getElementById(id).classList.remove('err'));
   }
   if(persist) saveState();
   updateWaPreview();
@@ -1266,7 +1282,7 @@ document.getElementById('payTransfer').addEventListener('click',()=>setPaymentTy
 
 /* ---- validation + whatsapp ---- */
 function clearErrors(){
-  ['fArea','fAddress','fLocation','fName','fCar','fPhone'].forEach(id=>{
+  ['fArea','fLocation','fCar'].forEach(id=>{
     const field=document.getElementById(id);
     field.classList.remove('err');
     const input=field.querySelector('input,textarea'); if(input) input.setAttribute('aria-invalid','false');
@@ -1278,7 +1294,6 @@ function setErr(id){
   const input=field.querySelector('input,textarea'); if(input) input.setAttribute('aria-invalid','true');
 }
 
-function normalizedPhone(v){ return (v||'').replace(/\D/g,'').replace(/^968/,''); }
 function normalizedLocationUrl(value){
   const raw=(value||'').trim().replace(/[\r\n]/g,'');
   if(!raw) return '';
@@ -1291,19 +1306,13 @@ function validateOrder(showErrors=true){
   if(showErrors) clearErrors();
   if(cart.length===0) return false;
   if(!orderType){ if(showErrors) alertInline(tr('الرجاء اختيار نوع الطلب: توصيل أو استلام','Please choose delivery or pickup.')); return false; }
-  const name=document.getElementById('inputName').value.trim();
   const car=document.getElementById('inputCar').value.trim();
-  const phone=normalizedPhone(document.getElementById('inputPhone').value);
   const area=document.getElementById('inputArea').value.trim();
-  const address=document.getElementById('inputAddress').value.trim();
   const locationRaw=document.getElementById('inputLocation').value.trim();
   let ok=true;
-  if(!/^\d{8}$/.test(phone)){ if(showErrors) setErr('fPhone'); ok=false; }
   if(orderType==='delivery'){
-    if(!name){ if(showErrors) setErr('fName'); ok=false; }
     if(!area){ if(showErrors) setErr('fArea'); ok=false; }
-    if(!address){ if(showErrors) setErr('fAddress'); ok=false; }
-    if(locationRaw && !normalizedLocationUrl(locationRaw)){ if(showErrors) setErr('fLocation'); ok=false; }
+    if(!locationRaw || !normalizedLocationUrl(locationRaw)){ if(showErrors) setErr('fLocation'); ok=false; }
   }else if(orderType==='pickup' && !car){
     if(showErrors) setErr('fCar'); ok=false;
   }
@@ -1312,26 +1321,22 @@ function validateOrder(showErrors=true){
 
 function buildWhatsAppMessage(){
   if(!orderId) orderId=makeOrderId();
-  const name=document.getElementById('inputName').value.trim() || '—';
   const car=document.getElementById('inputCar').value.trim() || '—';
-  const phone=document.getElementById('inputPhone').value.trim() || '—';
+  const vehicle=document.getElementById('inputVehicle').value.trim();
   const area=document.getElementById('inputArea').value.trim();
-  const address=document.getElementById('inputAddress').value.trim();
   const locationUrl=normalizedLocationUrl(document.getElementById('inputLocation').value);
   const notes=document.getElementById('inputNotes').value.trim();
   let msg=tr(`طلب جديد - بيتزاستو\n`,`New Order - Pizzasto\n`);
   msg+=tr(`رقم الطلب: ${orderId}\n`,`Order No: ${orderId}\n`);
   if(orderType==='delivery'){
-    msg+=tr(`الاسم: ${name}\n`,`Name: ${name}\n`);
-    msg+=tr(`الهاتف: ${phone}\n`,`Phone: ${phone}\n`);
     msg+=tr(`نوع الطلب: توصيل\n`,`Order Type: Delivery\n`);
-    msg+=tr(`العنوان: ${area||'—'} - ${address||'—'}\n`,`Address: ${area||'—'} - ${address||'—'}\n`);
+    msg+=tr(`المنطقة: ${area||'—'}\n`,`Area: ${area||'—'}\n`);
     if(locationUrl) msg+=tr(`الموقع: ${locationUrl}\n`,`Location: ${locationUrl}\n`);
     msg+=tr(`طريقة الدفع: ${paymentType==='transfer'?'تحويل بنكي':'الدفع عند الاستلام'}\n`,`Payment: ${paymentType==='transfer'?'Bank Transfer':'Cash on Delivery'}\n`);
   }else if(orderType==='pickup'){
-    msg+=tr(`الهاتف: ${phone}\n`,`Phone: ${phone}\n`);
     msg+=tr(`نوع الطلب: استلام من المحل\n`,`Order Type: Pickup from the restaurant\n`);
     msg+=tr(`رقم السيارة: ${car}\n`,`Car Number: ${car}\n`);
+    if(vehicle) msg+=tr(`وصف المركبة: ${vehicle}\n`,`Vehicle Description: ${vehicle}\n`);
   }else{
     msg+=tr(`نوع الطلب: لم يُحدد\n`,`Order Type: Not selected\n`);
   }
@@ -1445,24 +1450,22 @@ document.addEventListener('keydown',event=>{if(event.key==='Escape'&&adminOverla
 
 function saveCustomer(){
   try{ localStorage.setItem('pizzasto_customer_v2',JSON.stringify({
-    name:document.getElementById('inputName').value, phone:document.getElementById('inputPhone').value,
-    area:document.getElementById('inputArea').value, address:document.getElementById('inputAddress').value,
+    vehicle:document.getElementById('inputVehicle').value,
+    area:document.getElementById('inputArea').value,
     location:document.getElementById('inputLocation').value,
     car:document.getElementById('inputCar').value
   })); }catch(e){}
 }
 function loadCustomer(){
   try{ const x=JSON.parse(localStorage.getItem('pizzasto_customer_v2')||'{}');
-    if(x.name) document.getElementById('inputName').value=x.name;
-    if(x.phone) document.getElementById('inputPhone').value=x.phone;
+    if(x.vehicle) document.getElementById('inputVehicle').value=x.vehicle;
     if(x.area) document.getElementById('inputArea').value=x.area;
-    if(x.address) document.getElementById('inputAddress').value=x.address;
     if(x.location) document.getElementById('inputLocation').value=x.location;
     if(x.car) document.getElementById('inputCar').value=x.car;
   }catch(e){}
 }
-const FIELD_WRAPPER={inputName:'fName',inputCar:'fCar',inputPhone:'fPhone',inputArea:'fArea',inputAddress:'fAddress',inputLocation:'fLocation'};
-['inputName','inputCar','inputPhone','inputArea','inputAddress','inputLocation','inputNotes'].forEach(id=>document.getElementById(id).addEventListener('input',()=>{
+const FIELD_WRAPPER={inputCar:'fCar',inputArea:'fArea',inputLocation:'fLocation'};
+['inputCar','inputVehicle','inputArea','inputLocation','inputNotes'].forEach(id=>document.getElementById(id).addEventListener('input',()=>{
   const wrapper=FIELD_WRAPPER[id];
   if(wrapper){ document.getElementById(wrapper).classList.remove('err'); document.getElementById(id).setAttribute('aria-invalid','false'); }
   updateWaPreview();
@@ -1569,18 +1572,14 @@ function applyLanguage(lang){
   document.getElementById('adminNone').textContent=tr('إلغاء الكل','Clear All');
   document.getElementById('adminSave').textContent=tr('حفظ ونشر توفر اليوم','Save & Publish Today’s Availability');
   setPlaceholder('inputArea','مثال: العلو','Example: Al Ulu');
-  setPlaceholder('inputAddress','اسم الشارع، رقم المنزل، علامة مميزة','Street, house number, landmark');
   setPlaceholder('inputLocation','ألصق رابط الموقع هنا','Paste location link here');
-  setPlaceholder('inputName','اسمك الكامل','Your full name');
   setPlaceholder('inputCar','مثال: 1234 أ ب','Example: 1234 AB');
-  setPlaceholder('inputPhone','9xxxxxxx','9xxxxxxx');
+  setPlaceholder('inputVehicle','مثال: تويوتا بيضاء','Example: White Toyota');
   setPlaceholder('inputNotes','أي طلبات خاصة...','Any special requests...');
   setNodeText('label[for="inputArea"]','المنطقة / الحي','Area / District');
-  setNodeText('label[for="inputAddress"]','العنوان التفصيلي','Full Address');
-  setNodeText('label[for="inputLocation"]','الموقع المباشر من خرائط Google (اختياري)','Google Maps Location (optional)');
-  setNodeText('label[for="inputName"]','الاسم','Name');
+  setNodeText('label[for="inputLocation"]','الموقع المباشر من خرائط Google (مطلوب)','Google Maps Location (required)');
   setNodeText('label[for="inputCar"]','رقم السيارة','Car Number');
-  setNodeText('label[for="inputPhone"]','رقم الهاتف','Phone Number');
+  setNodeText('label[for="inputVehicle"]','وصف المركبة (اختياري)','Vehicle Description (optional)');
   setNodeText('label[for="inputNotes"]','ملاحظات (اختياري)','Notes (optional)');
   setNodeText('.payment-label','طريقة الدفع','Payment Method');
   document.getElementById('paymentBlock').setAttribute('aria-label',tr('طريقة الدفع','Payment Method'));
@@ -1590,15 +1589,12 @@ function applyLanguage(lang){
   setNodeText('.summary-box .sum-row.total span:first-child','إجمالي الطلب','Order Total');
   document.getElementById('getLocationBtn').textContent=tr('📍 تحديد موقعي','📍 Use My Location');
   document.getElementById('openMapsBtn').textContent=tr('🗺️ فتح خرائط Google لنسخ رابط الموقع','🗺️ Open Google Maps to Copy Location');
-  document.getElementById('errorName').textContent=tr('الرجاء إدخال الاسم','Please enter your name');
   document.getElementById('errorCar').textContent=tr('الرجاء إدخال رقم السيارة','Please enter the car number');
-  document.getElementById('errorPhone').textContent=tr('الرجاء إدخال رقم هاتف صحيح','Please enter a valid phone number');
   document.getElementById('errorArea').textContent=tr('الرجاء إدخال المنطقة','Please enter the area');
-  document.getElementById('errorAddress').textContent=tr('الرجاء إدخال العنوان','Please enter the address');
-  document.getElementById('errorLocation').textContent=tr('الرجاء إدخال رابط موقع صحيح يبدأ بـ https://','Please enter a valid location link beginning with https://');
+  document.getElementById('errorLocation').textContent=tr('الموقع مطلوب للتوصيل. أدخل رابط موقع صحيحًا.','Location is required for delivery. Enter a valid location link.');
   const locationStatus=document.getElementById('locationStatus');
   if(!locationStatus.classList.contains('success') && !locationStatus.classList.contains('error')){
-    locationStatus.textContent=tr('يمكنك تحديد موقعك تلقائيًا أو لصق رابط من خرائط Google.','Use your current location or paste a Google Maps link.');
+    locationStatus.textContent=tr('الموقع مطلوب للتوصيل. حدده تلقائيًا أو ألصق رابطًا من خرائط Google.','Location is required for delivery. Use your current location or paste a Google Maps link.');
   }
   const selectedAdmin=adminOverlay.classList.contains('show')
     ? new Set([...document.querySelectorAll('#adminFlavors input:checked')].map(input=>input.value))
